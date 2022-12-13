@@ -26,7 +26,6 @@ blueprint = make_google_blueprint(
 )
 app.register_blueprint(blueprint, url_prefix="/login")
 google_blueprint = app.blueprints.get("google")
-
 CORS(app)
 
 ##################################################################################################################
@@ -46,7 +45,7 @@ def homepage():
         if user_info is None: # user doesn't exist
             return render_template('signup.html', email=email)
         else: # user already exist
-            return redirect('/api/users/{}'.format(user_info[0]["user_id"]))
+            return redirect('http://dt2r5bk30ktaq.cloudfront.net/index.html?user_id={}'.format(user_info[0]["user_id"]))
     else:
         return render_template('signin.html')
 
@@ -80,7 +79,7 @@ def signup():
         column_name_list.append(k)
         value_list.append(v)
     user_id = UserResource.add_by_user_attributes(column_name_list, value_list)
-    return redirect('/api/users/{}'.format(user_id))
+    return redirect('http://dt2r5bk30ktaq.cloudfront.net/index.html?user_id={}'.format(user_id))
 
 @app.route('/api/users', methods=['GET'])
 def users():
