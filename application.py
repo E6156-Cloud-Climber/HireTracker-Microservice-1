@@ -60,13 +60,13 @@ def signup():
         email = user_data['email']
     request_data = request.form
     nickname = request_data.get('nickname', None)
-    if email is None:
+    if email == '' or email is None:
         return Response(json.dumps("Email missing.", default=str), status=400, content_type="application/json")
-    if nickname is None:
+    if nickname == '' or nickname is None:
         return Response(json.dumps("Nickname missing.", default=str), status=400, content_type="application/json")
     if UserResource.exists_by_email(email):
         return Response(json.dumps("Email already existed. Please use another email.", default=str), \
-                        status=401, content_type="application/json")
+                        status=400, content_type="application/json")
 
     insert_data = {}
     for k in request_data:
@@ -90,39 +90,34 @@ def users():
 
     else:
         return Response(json.dumps("Bad request. Wrong method", default=str), \
-                        status=410, content_type="application/json")
+                        status=405, content_type="application/json")
 
-@app.route('/api/users/<user_id>', methods=['GET', 'PUT', 'DELETE'])
+@app.route('/api/users/<user_id>', methods=['GET', 'PUT'])
 def certain_user(user_id):
+    try:
+        result = UserResource.get_by_user_id(user_id)
+    except:
+        return Response(json.dumps("Invalid fields requested!", default=str), \
+                        status=400, content_type="application/json")
+    if len(result) != 0:
+        result = result[0]
+    else:
+        return Response(json.dumps(f"User with user_id {user_id} not found!", default=str), \
+                        status=404, content_type="application/json")
     # get a user
     if request.method == 'GET':
-        try:
-            result = UserResource.get_by_user_id(user_id)
-        except:
-            return Response(json.dumps("Invalid fields requested!", default=str), \
-                            status=401, content_type="application/json")
-        if len(result) != 0:
-            result = result[0]
-            return Response(json.dumps(result, default=str), status=200, content_type="application/json")
-        else:
-            return Response(json.dumps(f"User with user_id {user_id} not found!", default=str), \
-                            status=404, content_type="application/json")
+        return Response(json.dumps(result, default=str), status=200, content_type="application/json")
+
     # Update a user
     elif request.method == 'PUT':
         request_data = request.get_json()
         UserResource.update_by_user_id(user_id, **request_data)
+        update_result = UserResource.get_by_user_id(user_id)
+        return Response(json.dumps(update_result[0], default=str), status=200, content_type="application/json")
 
-        return Response(json.dumps(f"User updated with user_id {user_id}", default=str), \
-                        status=200, content_type="application/json")
-
-    # Delete a user
-    elif request.method == 'DELETE':
-        result = UserResource.delete_by_user_id(user_id)
-        return Response(json.dumps(f"User deleted with user_id {user_id}", default=str), \
-                       status=201, content_type="application/json")
     else:
         return Response(json.dumps("Bad request. Wrong method", default=str), \
-                        status=410, content_type="application/json")
+                        status=405, content_type="application/json")
 @app.route("/api/logout")
 def logout():
     token = blueprint.token["access_token"]
