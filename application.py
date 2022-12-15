@@ -3,6 +3,7 @@ from flask_cors import CORS
 from flask_dance.contrib.google import make_google_blueprint, google
 import json
 import os
+import uuid
 from oauthlib.oauth2 import TokenExpiredError
 from application_services.user_resource import UserResource
 import middleware.security as security
@@ -73,6 +74,7 @@ def signup():
         if request_data[k] is not None:
             insert_data[k] = request_data[k]
     insert_data["email"] = email
+    insert_data["user_id"] = str(uuid.uuid4())
     column_name_list = []
     value_list = []
     for k, v in insert_data.items():
