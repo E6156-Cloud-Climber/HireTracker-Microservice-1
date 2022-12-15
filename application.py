@@ -79,7 +79,8 @@ def signup():
         column_name_list.append(k)
         value_list.append(v)
     user_id = UserResource.add_by_user_attributes(column_name_list, value_list)
-    return redirect('http://dt2r5bk30ktaq.cloudfront.net/index.html?user_id={}'.format(user_id))
+    user_info = UserResource.get_user_id_by_email(email)
+    return redirect('http://dt2r5bk30ktaq.cloudfront.net/index.html?user_id={}'.format(user_info[0]["user_id"]))
 
 @app.route('/api/users', methods=['GET'])
 def users():
