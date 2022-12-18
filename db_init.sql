@@ -18,6 +18,8 @@ create table user
 
 
 insert into user (user_id, nickname, email, school, major)
-values ('1','hahaha', 'hahaha04@gmail.com', 'Columbia University', 'Computer Science'),
-       ('2','hihi', 'hihi10@gmail.com', 'Columbia University', NULL),
-       ('3','ohoh', 'ohoh59@gmail.com', NULL, 'Computer Engineering');
+values ('1','testuser1', 'testuser1@gmail.com', 'Columbia University', 'Computer Science'),
+       ('2','testuser2', 'testuser2@gmail.com', 'Columbia University', NULL),
+       ('3','testuser3', 'testuser3@gmail.com', NULL, 'Computer Engineering'),
+       ('4','testuser4', 'testuser4@gmail.com', NULL, 'Computer Engineering'),
+       ('5','testuser5', 'testuser5@gmail.com', NULL, 'Computer Engineering');
